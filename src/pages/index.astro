@@ -1,0 +1,91 @@
+---
+import SignupForm from "../components/SignupForm.astro";
+import "../styles/global.css";
+
+const signupEndpoint =
+  import.meta.env.PUBLIC_SIGNUP_ENDPOINT ??
+  "http://127.0.0.1:54321/functions/v1/early-access-signup";
+const turnstileSiteKey =
+  import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ??
+  "1x00000000000000000000AA";
+const releaseId = import.meta.env.PUBLIC_RELEASE_ID ?? "local";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#06121d" />
+    <meta
+      name="description"
+      content="Sign up for Wakewalkers early access."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://proxylabs.gg/" />
+    <meta property="og:title" content="Wakewalkers Early Access" />
+    <meta
+      property="og:description"
+      content="Sign up for Wakewalkers early access."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Wakewalkers Early Access" />
+    <meta
+      name="twitter:description"
+      content="Sign up for Wakewalkers early access."
+    />
+    <link rel="canonical" href="https://proxylabs.gg/" />
+    <link rel="preconnect" href="https://challenges.cloudflare.com" />
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+      is:inline></script>
+    <title>Wakewalkers Early Access</title>
+  </head>
+  <body data-release={releaseId}>
+    <div class="scene" aria-hidden="true">
+      <picture class="scene__wash">
+        <source srcset="/assets/wakewalkers-splash.avif" type="image/avif" />
+        <source srcset="/assets/wakewalkers-splash.webp" type="image/webp" />
+        <img
+          src="/assets/wakewalkers-splash.png"
+          alt=""
+          decoding="async"
+          fetchpriority="high"
+        />
+      </picture>
+      <picture class="scene__focus">
+        <source srcset="/assets/wakewalkers-splash.avif" type="image/avif" />
+        <source srcset="/assets/wakewalkers-splash.webp" type="image/webp" />
+        <img
+          src="/assets/wakewalkers-splash.png"
+          alt=""
+          decoding="async"
+          fetchpriority="high"
+        />
+      </picture>
+      <div class="scene__shade"></div>
+    </div>
+
+    <main>
+      <div class="signup-panel">
+        <picture class="wordmark">
+          <source srcset="/assets/wakewalkers-wordmark.avif" type="image/avif" />
+          <source srcset="/assets/wakewalkers-wordmark.webp" type="image/webp" />
+          <img
+            src="/assets/wakewalkers-wordmark.png"
+            alt="Wakewalkers"
+            width="2172"
+            height="724"
+          />
+        </picture>
+
+        <SignupForm
+          endpoint={signupEndpoint}
+          turnstileSiteKey={turnstileSiteKey}
+        />
+      </div>
+    </main>
+  </body>
+</html>

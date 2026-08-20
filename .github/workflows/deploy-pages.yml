@@ -1,0 +1,66 @@
+name: Deploy Astro to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Artifact to deploy
+        required: true
+        default: legacy
+        type: choice
+        options:
+          - legacy
+          - astro
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Stage unchanged legacy site
+        if: inputs.target == 'legacy'
+        run: |
+          test "$(sha256sum index.html | cut -d ' ' -f 1)" = "2527589d1567f490ea3999e4129138c20787ea8e99d7a55fcd8ab66cf6cad39b"
+          mkdir -p .pages-legacy
+          cp index.html CNAME .pages-legacy/
+          touch .pages-legacy/.nojekyll
+
+      - name: Upload unchanged legacy site
+        if: inputs.target == 'legacy'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .pages-legacy
+
+      - name: Build and upload Astro site
+        if: inputs.target == 'astro'
+        uses: withastro/action@v6
+        with:
+          node-version: 24
+          package-manager: pnpm@11.19.0
+          build-cmd: pnpm run build:production
+        env:
+          PUBLIC_SIGNUP_ENDPOINT: ${{ vars.PUBLIC_SIGNUP_ENDPOINT }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
+          PUBLIC_RELEASE_ID: ${{ github.sha }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

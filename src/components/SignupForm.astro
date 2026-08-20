@@ -1,0 +1,164 @@
+---
+interface Props {
+  endpoint: string;
+  turnstileSiteKey: string;
+}
+
+const { endpoint, turnstileSiteKey } = Astro.props;
+---
+
+<section class="signup" aria-labelledby="signup-heading">
+  <h1 id="signup-heading">Sign up for early access</h1>
+
+  <form class="signup__form" data-signup-form data-endpoint={endpoint} novalidate>
+    <label for="email">Email address</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      inputmode="email"
+      autocomplete="email"
+      placeholder="you@example.com"
+      maxlength="254"
+      required
+    />
+
+    <div
+      class="cf-turnstile"
+      data-sitekey={turnstileSiteKey}
+      data-theme="dark"
+      data-size="flexible"
+      data-refresh-expired="auto"
+    ></div>
+
+    <button type="submit" data-submit-button>
+      <span data-button-label>Join the waitlist</span>
+    </button>
+
+    <p class="signup__status" data-form-status role="status" aria-live="polite"></p>
+  </form>
+
+  <p class="signup__success" data-success-message hidden role="status">
+    You're on the list.
+  </p>
+</section>
+
+<script>
+  const SUBMIT_TIMEOUT_MS = 12_000;
+
+  interface TurnstileApi {
+    reset: (widget?: string | HTMLElement) => void;
+  }
+
+  interface TurnstileWindow extends Window {
+    turnstile?: TurnstileApi;
+  }
+
+  const form = document.querySelector<HTMLFormElement>("[data-signup-form]");
+  const submitButton = form?.querySelector<HTMLButtonElement>(
+    "[data-submit-button]",
+  );
+  const buttonLabel = form?.querySelector<HTMLElement>("[data-button-label]");
+  const status = form?.querySelector<HTMLElement>("[data-form-status]");
+  const success = document.querySelector<HTMLElement>("[data-success-message]");
+
+  const setStatus = (message: string) => {
+    if (status) status.textContent = message;
+  };
+
+  const resetTurnstile = () => {
+    const api = (window as TurnstileWindow).turnstile;
+    const widget = form?.querySelector<HTMLElement>(".cf-turnstile");
+    if (api && widget) api.reset(widget);
+  };
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    setStatus("");
+
+    const email = form.elements.namedItem("email");
+    if (!(email instanceof HTMLInputElement) || !email.validity.valid) {
+      email instanceof HTMLInputElement && email.focus();
+      setStatus("Enter a valid email address.");
+      return;
+    }
+
+    const formData = new FormData(form);
+    const turnstileToken = formData.get("cf-turnstile-response");
+    if (typeof turnstileToken !== "string" || !turnstileToken) {
+      setStatus("Complete the verification.");
+      return;
+    }
+
+    const endpoint = form.dataset.endpoint;
+    if (!endpoint) {
+      setStatus("Something went wrong. Try again.");
+      return;
+    }
+
+    submitButton?.setAttribute("disabled", "");
+    form.setAttribute("aria-busy", "true");
+    if (buttonLabel) buttonLabel.textContent = "Submitting…";
+
+    const query = new URLSearchParams(window.location.search);
+    const controller = new AbortController();
+    const timeout = window.setTimeout(
+      () => controller.abort(),
+      SUBMIT_TIMEOUT_MS,
+    );
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          email: email.value,
+          turnstileToken,
+          landingPath: window.location.pathname,
+          utmSource: query.get("utm_source"),
+          utmMedium: query.get("utm_medium"),
+          utmCampaign: query.get("utm_campaign"),
+          utmTerm: query.get("utm_term"),
+          utmContent: query.get("utm_content"),
+          gclid: query.get("gclid"),
+          gbraid: query.get("gbraid"),
+          wbraid: query.get("wbraid"),
+          fbclid: query.get("fbclid"),
+          msclkid: query.get("msclkid"),
+          ttclid: query.get("ttclid"),
+          liFatId: query.get("li_fat_id"),
+          twclid: query.get("twclid"),
+        }),
+      });
+
+      const result = (await response.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
+
+      if (response.ok && result?.ok) {
+        form.hidden = true;
+        if (success) success.hidden = false;
+        return;
+      }
+
+      if (result?.error === "invalid_email") {
+        setStatus("Enter a valid email address.");
+        email.focus();
+      } else if (result?.error === "verification_failed") {
+        setStatus("Complete the verification.");
+      } else {
+        setStatus("Something went wrong. Try again.");
+      }
+      resetTurnstile();
+    } catch {
+      setStatus("Something went wrong. Try again.");
+      resetTurnstile();
+    } finally {
+      window.clearTimeout(timeout);
+      submitButton?.removeAttribute("disabled");
+      form.removeAttribute("aria-busy");
+      if (buttonLabel) buttonLabel.textContent = "Join the waitlist";
+    }
+  });
+</script>
