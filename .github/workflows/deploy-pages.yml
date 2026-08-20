@@ -1,6 +1,9 @@
 name: Deploy Astro to GitHub Pages
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       target:
@@ -29,7 +32,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Stage unchanged legacy site
-        if: inputs.target == 'legacy'
+        if: github.event_name == 'workflow_dispatch' && inputs.target == 'legacy'
         run: |
           test "$(sha256sum index.html | cut -d ' ' -f 1)" = "2527589d1567f490ea3999e4129138c20787ea8e99d7a55fcd8ab66cf6cad39b"
           mkdir -p .pages-legacy
@@ -37,13 +40,13 @@ jobs:
           touch .pages-legacy/.nojekyll
 
       - name: Upload unchanged legacy site
-        if: inputs.target == 'legacy'
+        if: github.event_name == 'workflow_dispatch' && inputs.target == 'legacy'
         uses: actions/upload-pages-artifact@v4
         with:
           path: .pages-legacy
 
       - name: Build and upload Astro site
-        if: inputs.target == 'astro'
+        if: github.event_name == 'push' || inputs.target == 'astro'
         uses: withastro/action@v6
         with:
           node-version: 24

@@ -1,6 +1,6 @@
 # Wakewalkers Early-Access Landing Page Tasks
 
-Status: S1, B1, and S2 complete; O1 in progress; Q1 pending
+Status: S1, B1, S2, and O1 complete; production functional QA complete
 Plan: `docs/early-access-landing-page-plan.md`
 
 | Task | Status |
@@ -8,8 +8,8 @@ Plan: `docs/early-access-landing-page-plan.md`
 | S1 — Astro site foundation and artwork | Complete locally |
 | B1 — Signup database and Edge Function | Complete and deployed |
 | S2 — Form integration | Complete locally |
-| O1 — Production configuration and deployment | In progress; frontend untouched |
-| Q1 — Independent production QA | Pending |
+| O1 — Production configuration and deployment | Complete |
+| Q1 — Independent production QA | Functional/security complete; visual cases not run |
 
 ## Local verification record
 
@@ -24,8 +24,21 @@ Plan: `docs/early-access-landing-page-plan.md`
 - `PASS` — production preflight allows only the configured origin; a missing
   CAPTCHA token is rejected with `403 verification_failed`.
 - `PASS` — anonymous production table reads return `permission denied`.
-- `NOT RUN` — production Turnstile verification, frontend deployment, and a
-  production signup; the Turnstile widget and secret are still pending.
+- `PASS` — production Astro deployment, release marker, HTTPS, custom domain,
+  apex HTTP redirect, and `www` redirect.
+- `PASS` — production Turnstile verification and one clearly identified test
+  signup: `wakewalkers-qa-1787249164891@example.com`.
+- `PASS` — stored landing path, `utm_source`, `utm_medium`, `utm_campaign`, and
+  `gclid` match the production test URL.
+- `PASS` — duplicate submission succeeds while the database row count remains
+  one.
+- `PASS` — missing and replayed CAPTCHA tokens, malformed email, disallowed
+  origin, wrong method, and anonymous table reads are rejected.
+- `PASS` — optimized AVIF/WebP artwork returns HTTP 200 and the production
+  artifact contains no server secret identifiers or values.
+- `NOT RUN` — screenshot-based mobile/desktop composition review, slow-network
+  throttling, and physical Safari/Chrome layout review were not requested in
+  this implementation pass.
 - `FAIL (unrelated)` — full backend suite: 273 passed and one Spark reward
   assertion failed in the separately landed Spark-stack work. Waitlist tests
   remained green.

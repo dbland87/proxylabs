@@ -1,6 +1,6 @@
 # Wakewalkers Early-Access Landing Page Plan
 
-Status: production backend staged; frontend cutover pending
+Status: live in production
 Updated: 2026-08-20
 
 ## Goal
@@ -186,8 +186,9 @@ after the Astro output is complete. Never publish an intermediate source tree
 that lacks a working root page.
 
 No DNS migration or hosting-provider change is planned.
-Automatic deployment on pushes stays disabled until the first successful
-cutover; both rehearsal and launch are explicit manual workflow runs.
+The rehearsal and first launch use explicit manual workflow runs. After the
+successful cutover, pushes to `main` build and deploy the Astro target
+automatically; the manual `legacy` target remains available for rollback.
 
 ## Definition of done
 
