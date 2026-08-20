@@ -87,5 +87,45 @@ const releaseId = import.meta.env.PUBLIC_RELEASE_ID ?? "local";
         />
       </div>
     </main>
+
+    <footer class="site-footer">
+      <p>
+        &copy; 2026 Proxylabs.gg LLC
+        <span aria-hidden="true">&middot;</span>
+        <a href="mailto:support@proxylabs.gg">support@proxylabs.gg</a>
+        <span aria-hidden="true">&middot;</span>
+        <a href="/privacy/">Privacy</a>
+      </p>
+    </footer>
   </body>
 </html>
+
+<style>
+  main {
+    padding-bottom: 3.5rem;
+  }
+  .site-footer {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 1;
+    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom));
+    text-align: center;
+    pointer-events: none;
+  }
+  .site-footer p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: #f7ead0b8;
+    text-shadow: 0 1px 8px #010910b0;
+  }
+  .site-footer a {
+    color: inherit;
+    pointer-events: auto;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .site-footer a:hover,
+  .site-footer a:focus-visible {
+    color: #f5c65f;
+  }
+</style>
