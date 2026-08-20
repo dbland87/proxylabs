@@ -69,61 +69,70 @@ const releaseId = import.meta.env.PUBLIC_RELEASE_ID ?? "local";
     </div>
 
     <main>
-      <div class="signup-panel">
-        <picture class="wordmark">
-          <source srcset="/assets/wakewalkers-wordmark.avif" type="image/avif" />
-          <source srcset="/assets/wakewalkers-wordmark.webp" type="image/webp" />
-          <img
-            src="/assets/wakewalkers-wordmark.png"
-            alt="Wakewalkers"
-            width="2172"
-            height="724"
-          />
-        </picture>
+      <div class="landing-stack">
+        <div class="signup-panel">
+          <picture class="wordmark">
+            <source srcset="/assets/wakewalkers-wordmark.avif" type="image/avif" />
+            <source srcset="/assets/wakewalkers-wordmark.webp" type="image/webp" />
+            <img
+              src="/assets/wakewalkers-wordmark.png"
+              alt="Wakewalkers"
+              width="2172"
+              height="724"
+            />
+          </picture>
 
-        <SignupForm
-          endpoint={signupEndpoint}
-          turnstileSiteKey={turnstileSiteKey}
-        />
+          <SignupForm
+            endpoint={signupEndpoint}
+            turnstileSiteKey={turnstileSiteKey}
+          />
+        </div>
+
+        <footer class="site-footer">
+          <p>Proxylabs.gg is an independent game studio in Utah.</p>
+          <p>
+            © 2026 Proxylabs.gg LLC
+            <span aria-hidden="true">·</span>
+            <a href="mailto:support@proxylabs.gg">support@proxylabs.gg</a>
+            <span aria-hidden="true">·</span>
+            <a href="/privacy/">Privacy</a>
+          </p>
+        </footer>
       </div>
     </main>
-
-    <footer class="site-footer">
-      <p>
-        &copy; 2026 Proxylabs.gg LLC
-        <span aria-hidden="true">&middot;</span>
-        <a href="mailto:support@proxylabs.gg">support@proxylabs.gg</a>
-        <span aria-hidden="true">&middot;</span>
-        <a href="/privacy/">Privacy</a>
-      </p>
-    </footer>
   </body>
 </html>
 
 <style>
-  main {
-    padding-bottom: 3.5rem;
+  .landing-stack {
+    display: grid;
+    width: min(100%, 24rem);
+    gap: 0.75rem;
   }
+
   .site-footer {
-    position: fixed;
-    inset: auto 0 0;
-    z-index: 1;
-    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom));
+    padding: 0 0.75rem;
     text-align: center;
-    pointer-events: none;
   }
+
   .site-footer p {
     margin: 0;
     font-size: 0.78rem;
+    line-height: 1.45;
     color: #f7ead0b8;
     text-shadow: 0 1px 8px #010910b0;
   }
+
+  .site-footer p + p {
+    margin-top: 0.15rem;
+  }
+
   .site-footer a {
     color: inherit;
-    pointer-events: auto;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
+
   .site-footer a:hover,
   .site-footer a:focus-visible {
     color: #f5c65f;

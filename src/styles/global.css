@@ -78,13 +78,14 @@ main {
   z-index: 1;
   min-height: 100svh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
-  padding: clamp(1rem, 4svh, 2.75rem) 0.5rem 2rem;
+  align-items: center;
+  padding: 1rem 0.5rem;
 }
 
 .signup-panel {
-  width: min(100%, 24rem);
+  width: 100%;
   padding: 0.85rem 0.75rem 1rem;
   text-align: center;
   background: linear-gradient(180deg, rgb(3 13 22 / 0.86), rgb(3 13 22 / 0.66));
@@ -207,15 +208,11 @@ main {
   .scene__focus img {
     object-fit: contain;
   }
-
-  main {
-    padding-top: clamp(1rem, 3.5svh, 2.25rem);
-  }
 }
 
 @media (max-height: 720px) {
   main {
-    padding-top: 0.5rem;
+    padding-block: 0.5rem;
   }
 
   .signup-panel {

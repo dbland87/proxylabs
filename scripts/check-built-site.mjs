@@ -7,6 +7,7 @@ const distPath = distDir.pathname;
 const requiredFiles = [
   "CNAME",
   "index.html",
+  "privacy/index.html",
   "assets/wakewalkers-splash.avif",
   "assets/wakewalkers-splash.webp",
   "assets/wakewalkers-splash.png",
@@ -27,6 +28,9 @@ const requiredCopy = [
   "Enter a valid email address.",
   "Complete the verification.",
   "Something went wrong. Try again.",
+  "Proxylabs.gg is an independent game studio in Utah.",
+  "support@proxylabs.gg",
+  "Privacy",
 ];
 
 const expectedVisibleBodyCopy = [
@@ -34,6 +38,8 @@ const expectedVisibleBodyCopy = [
   "Email address",
   "Join the waitlist",
   "You're on the list.",
+  "Proxylabs.gg is an independent game studio in Utah.",
+  "© 2026 Proxylabs.gg LLC · support@proxylabs.gg · Privacy",
 ].join(" ");
 
 const forbiddenCopy = [
@@ -93,6 +99,8 @@ if (!bodyHtml) {
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
+    .replace(/&copy;/g, "©")
+    .replace(/&middot;/g, "·")
     .replace(/\s+/g, " ")
     .trim();
   if (visibleBodyCopy !== expectedVisibleBodyCopy) {
