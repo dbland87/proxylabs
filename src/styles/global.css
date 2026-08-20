@@ -37,9 +37,10 @@ input {
 }
 
 .scene {
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
   background: #06121d;
+  pointer-events: none;
 }
 
 .scene picture,
@@ -73,6 +74,8 @@ input {
 }
 
 main {
+  position: relative;
+  z-index: 1;
   min-height: 100svh;
   display: flex;
   justify-content: center;
