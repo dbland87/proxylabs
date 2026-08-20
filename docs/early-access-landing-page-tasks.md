@@ -1,14 +1,14 @@
 # Wakewalkers Early-Access Landing Page Tasks
 
-Status: S1, B1, and S2 implemented locally; O1 and Q1 pending
+Status: S1, B1, and S2 complete; O1 in progress; Q1 pending
 Plan: `docs/early-access-landing-page-plan.md`
 
 | Task | Status |
 |---|---|
 | S1 — Astro site foundation and artwork | Complete locally |
-| B1 — Signup database and Edge Function | Complete locally |
+| B1 — Signup database and Edge Function | Complete and deployed |
 | S2 — Form integration | Complete locally |
-| O1 — Production configuration and deployment | Pending |
+| O1 — Production configuration and deployment | In progress; frontend untouched |
 | Q1 — Independent production QA | Pending |
 
 ## Local verification record
@@ -20,8 +20,12 @@ Plan: `docs/early-access-landing-page-plan.md`
   `2527589d1567f490ea3999e4129138c20787ea8e99d7a55fcd8ab66cf6cad39b`.
 - `PASS` — local database reset applied the waitlist migration.
 - `PASS` — 18 focused backend handler/schema tests.
-- `NOT RUN` — production Turnstile, deployment, and production signup; O1 is
-  intentionally pending.
+- `PASS` — production migration is present and the Edge Function is deployed.
+- `PASS` — production preflight allows only the configured origin; a missing
+  CAPTCHA token is rejected with `403 verification_failed`.
+- `PASS` — anonymous production table reads return `permission denied`.
+- `NOT RUN` — production Turnstile verification, frontend deployment, and a
+  production signup; the Turnstile widget and secret are still pending.
 - `FAIL (unrelated)` — full backend suite: 273 passed and one Spark reward
   assertion failed in the separately landed Spark-stack work. Waitlist tests
   remained green.

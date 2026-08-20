@@ -1,6 +1,6 @@
 # Wakewalkers Early-Access Landing Page Plan
 
-Status: implementation staged; production cutover pending
+Status: production backend staged; frontend cutover pending
 Updated: 2026-08-20
 
 ## Goal
